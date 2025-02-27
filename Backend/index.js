@@ -44,16 +44,26 @@ app.post("/post", (req, res) => {
 })
 
 //Delete request
-app.delete("/delete", (req, res) => {
+app.delete("/delete/:id", (req, res) => {
     const {id} = req.params;
-    student.findByIdAndDelete("67bd430fb10f5748bac81c04")
+    student.findByIdAndDelete(id)
     .then(() => res.status(201).json({message: "user deleted successfully"}))
     .catch(err => res.status(400).json("error while deleting" + err))
 })
 
 //update method
-app.put("/update", (req, res) => {
-    
+app.put("/update/:id", (req, res) => {
+    const {name, group} = req.body;
+    const {id} = req.params;
+
+    student.findByIdAndUpdate(id, {name, group}, {new: true})
+    .then(updateStudent => {
+        if(!updateStudent){
+            return res.status(404).json({message:"user not found"})
+        }
+        res.json({message: "user upadated successfully"})
+    })
+    .catch( err => res.status(400).json('error in upadeting' + err))
 })
 
 const PORT = process.env.PORT || 8000;
